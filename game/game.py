@@ -16,7 +16,7 @@ class DimensionShiftGame(arcade.Window):
         self.bullets = None
         self.enemies = None
         self.enemy_bullets = None
-
+        self.enemy_spawn_timer = 0
         self.shoot_sound = arcade.load_sound("assets/laser.mp3")
         self.enemy_shoot_sound = arcade.load_sound("assets/laser2.mp3")
 
@@ -27,12 +27,20 @@ class DimensionShiftGame(arcade.Window):
         self.enemies = arcade.SpriteList()
         self.enemy_bullets = arcade.SpriteList()
         self.all_sprites.append(self.player)
+        self.spawn_enemy()
 
         x = random.randint(100, SCREEN_WIDTH - 100)
         y = random.randint(300, SCREEN_HEIGHT - 100)
         enemy = Enemy(x, y)
         self.enemies.append(enemy)
         self.all_sprites.append(enemy)
+        
+    def spawn_enemy(self):
+        """Spawn an enemy at a random position at the top of the screen."""
+        if len(self.enemies) < 5:  # Check if the number of enemies is less than the maximum allowed
+            enemy = Enemy(random.randint(0, SCREEN_WIDTH), random.randint(0, SCREEN_HEIGHT))
+            self.enemies.append(enemy)
+            self.all_sprites.append(enemy)
 
     def on_draw(self):
         self.clear()
@@ -44,6 +52,18 @@ class DimensionShiftGame(arcade.Window):
         self.all_sprites.update()
         self.bullets.update()
         self.enemy_bullets.update()
+    # Check for bullet and enemy collisions
+        for bullet in self.bullets:
+            hit_list = arcade.check_for_collision_with_list(bullet, self.enemies)
+            for enemy in hit_list:
+                bullet.kill()
+                enemy.kill()
+
+        # Update the enemy spawn timer
+        self.enemy_spawn_timer += delta_time
+        if self.enemy_spawn_timer > 2:  # Spawn an enemy every 2 seconds
+            self.spawn_enemy()
+            self.enemy_spawn_timer = 0  # Reset the timer
 
         for enemy in self.enemies:
             bullet = enemy.shoot(self.player.center_x, self.player.center_y)
@@ -51,6 +71,13 @@ class DimensionShiftGame(arcade.Window):
                 self.enemy_bullets.append(bullet)
                 self.all_sprites.append(bullet)
                 arcade.play_sound(self.enemy_shoot_sound)
+
+        for bullet in self.enemy_bullets:
+            if arcade.check_for_collision(bullet, self.player):
+                bullet.kill()
+                # Handle player hit (e.g., reduce health, end game, etc.)
+                print("OUCH!")
+
 
     def on_key_press(self, key, modifiers):
         if key in (arcade.key.LEFT, arcade.key.A):
