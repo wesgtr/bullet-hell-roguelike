@@ -7,7 +7,7 @@ class Bullet(arcade.Sprite):
     """Bullet class."""
 
     def __init__(self, x, y, target_x, target_y):
-        super().__init__("assets/bullet.png", 0.2)  # Placeholder sprite
+        super().__init__("assets/bullet.png", 0.01)  # Placeholder sprite
         self.center_x = x
         self.center_y = y
 
@@ -21,7 +21,7 @@ class Bullet(arcade.Sprite):
         self.change_y = math.sin(angle) * BULLET_SPEED
 
         # Set rotation
-        self.angle = math.degrees(angle) - 90
+        self.angle = math.degrees(angle)  # Agora apenas os tiros rotacionam
 
     def update(self, delta_time: float = 1/60):
         """Move the bullet."""
@@ -29,5 +29,5 @@ class Bullet(arcade.Sprite):
         self.center_y += self.change_y
 
         # Remove bullet if off-screen
-        if self.center_x < 0 or self.center_x > 800 or self.center_y < 0 or self.center_y > 600:
+        if self.center_x < 0 or self.center_x > 1280 or self.center_y < 0 or self.center_y > 720:
             self.kill()

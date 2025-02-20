@@ -3,8 +3,8 @@ from game.player import Player
 from game.bullet import Bullet
 
 # Screen settings
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Dimension Shift: Bullet Hell Roguelike"
 
 class DimensionShiftGame(arcade.Window):
@@ -15,6 +15,8 @@ class DimensionShiftGame(arcade.Window):
         self.player = None
         self.all_sprites = None
         self.bullets = None
+
+        self.shoot_sound = arcade.load_sound("assets/laser.mp3")
 
     def setup(self):
         """Initializes the game."""
@@ -52,14 +54,10 @@ class DimensionShiftGame(arcade.Window):
         elif key in (arcade.key.UP, arcade.key.DOWN, arcade.key.W, arcade.key.S):
             self.player.change_y = 0
 
-    def on_mouse_motion(self, x, y, dx, dy):
-        """Rotate player towards the mouse."""
-        self.player.rotate_towards_mouse(x, y)
-
     def on_mouse_press(self, x, y, button, modifiers):
         """Shoot a bullet towards the mouse position."""
         if button == arcade.MOUSE_BUTTON_LEFT:
             bullet = Bullet(self.player.center_x, self.player.center_y, x, y)
             self.bullets.append(bullet)
             self.all_sprites.append(bullet)
-
+            arcade.play_sound(self.shoot_sound)
