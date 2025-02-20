@@ -4,7 +4,7 @@ import math
 
 ENEMY_SPEED = 2
 BULLET_SPEED = 5
-ENEMY_SHOOT_INTERVAL = 4.0  # ✅ Agora claramente em segundos
+ENEMY_SHOOT_INTERVAL = 4.0
 
 class Enemy(arcade.Sprite):
     """Enemy class with random movement and shooting."""
@@ -17,7 +17,7 @@ class Enemy(arcade.Sprite):
         self.change_x = random.choice([-ENEMY_SPEED, ENEMY_SPEED])
         self.change_y = random.choice([-ENEMY_SPEED, ENEMY_SPEED])
         self.time_since_last_shot = 0
-        self.has_shot = False  # ✅ Garante que só atire uma vez
+        self.has_shot = False
 
     def update(self, delta_time: float = 1 / 60):
         """Moves the enemy randomly and checks if it should shoot."""
@@ -29,19 +29,18 @@ class Enemy(arcade.Sprite):
         if self.bottom < 0 or self.top > 720:
             self.change_y *= -1
 
-        # ✅ Espera ENEMY_SHOOT_INTERVAL segundos para atirar
         if not self.has_shot:
             self.time_since_last_shot += delta_time
             if self.time_since_last_shot >= ENEMY_SHOOT_INTERVAL:
-                self.has_shot = True  # ✅ Marca que o inimigo já atirou
+                self.has_shot = True
 
     def shoot(self, player_x, player_y):
-        """Dispara um tiro na direção do jogador, mas apenas uma vez."""
-        if self.has_shot:  # ✅ Só atira se o tempo passou
-            self.has_shot = False  # ✅ Impede novos tiros
+
+        if self.has_shot:
+            self.has_shot = False
             dx = player_x - self.center_x
             dy = player_y - self.center_y
-            angle = math.atan2(dy, dx)  # ✅ Calcula a direção do jogador
+            angle = math.atan2(dy, dx)
 
             bullet = Bullet(self.center_x, self.center_y, angle)
             return bullet

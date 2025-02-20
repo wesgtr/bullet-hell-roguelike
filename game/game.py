@@ -51,13 +51,12 @@ class DimensionShiftGame(arcade.Window):
         self.bullets.update()
         self.enemy_bullets.update()
 
-        # ✅ Agora só adicionamos o tiro quando for a hora certa
         for enemy in self.enemies:
             bullet = enemy.shoot(self.player.center_x, self.player.center_y)
             if bullet:
                 self.enemy_bullets.append(bullet)
                 self.all_sprites.append(bullet)
-                arcade.play_sound(self.enemy_shoot_sound)
+                # arcade.play_sound(self.enemy_shoot_sound)
 
     def on_key_press(self, key, modifiers):
         """Handle key presses (movement)."""

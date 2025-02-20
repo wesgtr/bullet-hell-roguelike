@@ -21,7 +21,7 @@ class Bullet(arcade.Sprite):
         self.change_y = math.sin(angle) * BULLET_SPEED
 
         # Set rotation
-        self.angle = math.degrees(angle)  # Agora apenas os tiros rotacionam
+        self.angle = math.degrees(angle)
 
     def update(self, delta_time: float = 1/60):
         """Move the bullet."""
