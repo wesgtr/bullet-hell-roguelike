@@ -1,8 +1,9 @@
 import arcade
+import random
 from game.player import Player
+from game.enemy import Enemy
 from game.bullet import Bullet
 
-# Screen settings
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Dimension Shift: Bullet Hell Roguelike"
@@ -15,26 +16,48 @@ class DimensionShiftGame(arcade.Window):
         self.player = None
         self.all_sprites = None
         self.bullets = None
+        self.enemies = None
+        self.enemy_bullets = None
 
         self.shoot_sound = arcade.load_sound("assets/laser.mp3")
+        # self.enemy_shoot_sound = arcade.load_sound("assets/laser2.mp3")
 
     def setup(self):
         """Initializes the game."""
         self.player = Player()
         self.all_sprites = arcade.SpriteList()
         self.bullets = arcade.SpriteList()
+        self.enemies = arcade.SpriteList()
+        self.enemy_bullets = arcade.SpriteList()
         self.all_sprites.append(self.player)
+
+        # Criar apenas 1 inimigo
+        x = random.randint(100, SCREEN_WIDTH - 100)
+        y = random.randint(300, SCREEN_HEIGHT - 100)
+        enemy = Enemy(x, y)
+        self.enemies.append(enemy)
+        self.all_sprites.append(enemy)
 
     def on_draw(self):
         """Render the game."""
         self.clear()
         self.all_sprites.draw()
         self.bullets.draw()
+        self.enemy_bullets.draw()
 
     def on_update(self, delta_time):
         """Update game logic."""
         self.all_sprites.update()
         self.bullets.update()
+        self.enemy_bullets.update()
+
+        # ✅ Agora só adicionamos o tiro quando for a hora certa
+        for enemy in self.enemies:
+            bullet = enemy.shoot(self.player.center_x, self.player.center_y)
+            if bullet:
+                self.enemy_bullets.append(bullet)
+                self.all_sprites.append(bullet)
+                arcade.play_sound(self.enemy_shoot_sound)
 
     def on_key_press(self, key, modifiers):
         """Handle key presses (movement)."""
