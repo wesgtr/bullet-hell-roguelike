@@ -4,6 +4,7 @@ from game.player import Player
 from game.enemy import Enemy
 from game.bullet import Bullet
 
+
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Dimension Shift: Bullet Hell Roguelike"
@@ -19,6 +20,7 @@ class DimensionShiftGame(arcade.Window):
         self.enemy_spawn_timer = 0
         self.shoot_sound = arcade.load_sound("assets/laser.mp3")
         self.enemy_shoot_sound = arcade.load_sound("assets/laser2.mp3")
+        
 
     def setup(self):
         self.player = Player()
@@ -34,6 +36,7 @@ class DimensionShiftGame(arcade.Window):
         enemy = Enemy(x, y)
         self.enemies.append(enemy)
         self.all_sprites.append(enemy)
+        
         
     def spawn_enemy(self):
         """Spawn an enemy at a random position at the top of the screen."""
@@ -76,8 +79,8 @@ class DimensionShiftGame(arcade.Window):
             if arcade.check_for_collision(bullet, self.player):
                 bullet.kill()
                 # Handle player hit (e.g., reduce health, end game, etc.)
-                print("OUCH!")
-
+                self.player.health -= 1
+                
 
     def on_key_press(self, key, modifiers):
         if key in (arcade.key.LEFT, arcade.key.A):

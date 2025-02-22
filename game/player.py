@@ -1,7 +1,7 @@
 import arcade
 
 PLAYER_SPEED = 5
-
+PLAYER_HEALTH = 5
 class Player(arcade.Sprite):
     """Player class."""
 
@@ -12,11 +12,19 @@ class Player(arcade.Sprite):
         self.change_x = 0
         self.change_y = 0
         self.speed = PLAYER_SPEED
+        self.health = PLAYER_HEALTH
+        self.max_health = 20
 
     def update(self, delta_time: float = 1/60):
         """Update player movement."""
         self.center_x += self.change_x
         self.center_y += self.change_y
+
+        # Check status on health
+        if self.health <= 0:
+            self.kill()
+            print("OUCH!")
+            arcade.exit()
 
         # Keep player within screen bounds
         if self.left < 0:
