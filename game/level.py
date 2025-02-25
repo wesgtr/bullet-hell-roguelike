@@ -1,6 +1,7 @@
-import random
 import arcade
+import random
 from enemy import Enemy
+from floor_gen import FloorGenerator
 
 class Room:
     def __init__(self, width, height, is_boss_room=False):
@@ -10,6 +11,7 @@ class Room:
         self.doors = {}  # Dictionary to store door connections ("north", "south", etc.)
         self.enemies = arcade.SpriteList()  # List of enemies in the room
         self.locked = False  # Whether the room is locked
+        self.background = None  # To hold the background image for the room
     
     def add_door(self, direction, room):
         """Connect this room to another room in the given direction."""
@@ -30,16 +32,33 @@ class Room:
         if len(self.enemies) == 0:
             self.locked = False  # Unlock when all enemies are defeated
 
+    def on_draw(self):
+        """Draw the room with the background image."""
+        if self.background:
+            arcade.draw_texture_rectangle(self.width // 2, self.height // 2, self.width, self.height, arcade.load_texture(self.background))
+
+    def check_collision(self, sprite):
+        """Check if a sprite is within the room's perimeter."""
+        if sprite.left < 0:
+            sprite.left = 0
+        if sprite.right > self.width:
+            sprite.right = self.width
+        if sprite.bottom < 0:
+            sprite.bottom = 0
+        if sprite.top > self.height:
+            sprite.top = self.height
+
 class Level:
     def __init__(self):
         self.rooms = []
+        self.floor_generator = FloorGenerator(1280, 720)  # Screen size
         self.generate_rooms()
     
     def generate_rooms(self):
         """Create and connect rooms procedurally."""
-        num_rooms = 9
+        rooms = self.floor_generator.get_rooms()
         boss_room = Room(800, 800, is_boss_room=True)
-        rooms = [Room(600, 600) for _ in range(num_rooms)] + [boss_room]
+        rooms.append(boss_room)
         random.shuffle(rooms)  # Shuffle for variety
         
         for i in range(len(rooms) - 1):
