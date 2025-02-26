@@ -3,11 +3,13 @@ import random
 from game.player import Player
 from game.enemy import Enemy
 from game.bullet import Bullet
+from game.floor_gen import FloorGen
+
 
 
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Dimension Shift: Bullet Hell Roguelike"
+SCREEN_TITLE = "Bullet Hell Roguelike"
 
 class DimensionShiftGame(arcade.Window):
     def __init__(self):
@@ -20,6 +22,8 @@ class DimensionShiftGame(arcade.Window):
         self.enemy_spawn_timer = 0
         self.shoot_sound = arcade.load_sound("assets/laser.mp3")
         self.enemy_shoot_sound = arcade.load_sound("assets/laser2.mp3")
+        self.floor = FloorGen()
+        self.floor.generate()  # Generate the dungeon
         
 
     def setup(self):
@@ -38,6 +42,7 @@ class DimensionShiftGame(arcade.Window):
         self.all_sprites.append(enemy)
         
         
+        
     def spawn_enemy(self):
         """Spawn an enemy at a random position at the top of the screen."""
         if len(self.enemies) < 5:  # Check if the number of enemies is less than the maximum allowed
@@ -50,8 +55,12 @@ class DimensionShiftGame(arcade.Window):
         self.all_sprites.draw()
         self.bullets.draw()
         self.enemy_bullets.draw()
+        arcade.start_render()
+        self.floor.draw()  # Draw the room background
+        self.player.draw()
 
     def on_update(self, delta_time):
+        self.player.update()
         self.all_sprites.update()
         self.bullets.update()
         self.enemy_bullets.update()

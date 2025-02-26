@@ -14,6 +14,9 @@ class Player(arcade.Sprite):
         self.speed = PLAYER_SPEED
         self.health = PLAYER_HEALTH
         self.max_health = 20
+        super().__init__("assets/player.png", 0.2)
+        self.center_x = ROOM_WIDTH // 2  # Start at the room center
+        self.center_y = ROOM_HEIGHT // 2
 
     def update(self, delta_time: float = 1/60):
         """Update player movement."""
